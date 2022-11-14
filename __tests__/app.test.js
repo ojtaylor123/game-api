@@ -42,3 +42,37 @@ describe("GET /api/categories", () => {
       });
   });
 });
+
+describe("GET /api/reviews", () => {
+  test("returns an array of reviews sorted by the creation date of the reviews (desc) and containing a number of comments column", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+
+        expect(Array.isArray(reviews)).toBe(true);
+        expect(reviews.length).toBeGreaterThan(0);
+        expect(reviews[0] && typeof reviews[0] === "object").toBe(true);
+        expect(reviews).toBeSortedBy("created_at", {
+          descending: true,
+        });
+
+        expect(reviews.length).toBeGreaterThan(0);
+        expect(reviews[0] && typeof reviews[0] === "object").toBe(true);
+
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            count: expect.any(String),
+          });
+        });
+      });
+  });
+});
