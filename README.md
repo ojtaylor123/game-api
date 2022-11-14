@@ -1,1 +1,1 @@
-Please note that two .env files will need to be created in order to connect the databases 
+Please note that two .env files will need to be created in order to connect the database. Please create the following file in you root project directory ".env.test" containing: PGDATABASE=nc_games_test. Next create the file ".env.development" containing: "PGDATABASE=nc_games".
