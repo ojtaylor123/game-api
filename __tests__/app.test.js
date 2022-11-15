@@ -102,6 +102,7 @@ describe("get reviews by id", () => {
         expect(Array.isArray(review)).toBe(true);
         expect(review.length).toBe(1);
         expect(review[0] && typeof review[0] === "object").toBe(true);
+        expect(review[0].review_id).toBe(2)
 
         expect(review[0]).toMatchObject({
           review_id: expect.any(Number),
