@@ -1,4 +1,4 @@
-const {fetchCategories, fetchReviews, fetchReviewsById} = require('../models/models')
+const {fetchCategories, fetchReviews, fetchReviewsById,fetchReviewCommentsById} = require('../models/models')
 
 
 
@@ -34,6 +34,17 @@ exports.getReviewById = (req, res, next) => {
     });
 };
 
+
+exports.getReviewCommentsById = (req, res, next) => {
+  const { review_id } = req.params;
+  fetchReviewCommentsById(review_id)
+    .then((comments) => {
+      res.send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
 
 
 

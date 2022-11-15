@@ -4,6 +4,7 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 
 const data = require("../db/data/test-data");
+const { forEach } = require("../db/data/test-data/categories.js");
 
 afterAll(() => {
   return db.end();
@@ -113,10 +114,67 @@ describe("get reviews by id", () => {
           category: expect.any(String),
           owner: expect.any(String),
           created_at: expect.any(String),
+        });
+      });
+  });
+});
 
-
+describe("get review comments by ID ", () => {
+  test("given a valid review_id with comments gives an array of those comments", () => {
+    return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(Array.isArray(comments)).toBe(true);
+        expect(comments.length).toBeGreaterThan(1);
+        expect(comments[0] && typeof comments[0] === "object").toBe(true);
+        expect(comments).toBeSortedBy("created_at", {
+          descending: true,
         });
 
+        
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            review_id: 3,
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+          });
+        });
       });
+  });
+
+  test('given an invalid ID should reject with a 400 and a message', () => {
+    return request(app)
+      .get("/api/reviews/hello/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Invalid query review ID must be int')
+      })
+    
+  });
+
+  test('given a valid but unused ID invokes check review ID and gives a 404', () => {
+    return request(app)
+    .get("/api/reviews/36/comments")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('review ID not found')
+    })
+  });
+
+  test.only('given a valid review with no IDs returns a 204 with no content', () => {
+    return request(app)
+    .get("/api/reviews/4/comments")
+    .expect(404)
+    .then(({ body }) => {
+      
+      expect(body.msg).toBe('review ID found but no comments attatched')
+
+      
+    })
   });
 });
