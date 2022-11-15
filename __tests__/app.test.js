@@ -58,9 +58,6 @@ describe("GET /api/reviews", () => {
           descending: true,
         });
 
-        expect(reviews.length).toBeGreaterThan(0);
-        expect(reviews[0] && typeof reviews[0] === "object").toBe(true);
-
         reviews.forEach((review) => {
           expect(review).toMatchObject({
             owner: expect.any(String),
