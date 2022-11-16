@@ -16,7 +16,7 @@ app.get("/api/reviews/:review_id/comments", getReviewCommentsById);
 
 app.post("/api/reviews/:review_id/comments", postCommentsByReviewId);
 
-app.patch("/api/reviews/reviews/:review_id",patchReviewVotes)
+app.patch("/api/reviews/:review_id",patchReviewVotes)
 
 
 

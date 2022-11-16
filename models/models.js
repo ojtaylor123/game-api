@@ -94,8 +94,6 @@ exports.insertCommentsByReviewId = (review_id, commentBody) => {
       const templateKeys = ["username", "body"].sort();
       const commentBodyKeys = Object.keys(commentBody).sort();
 
-   
-
       if (JSON.stringify(templateKeys) !== JSON.stringify(commentBodyKeys)) {
         return Promise.reject({
           status: 400,
@@ -116,13 +114,40 @@ exports.insertCommentsByReviewId = (review_id, commentBody) => {
     });
 };
 
-exports.updateReviewVotes = (review_id,votes) =>{
+exports.updateReviewVotes = (review_id, votes) => {
 
+  if(isNaN(review_id)){
+    return Promise.reject({
+      status: 400,
+      msg: "review ID must be an integer",
+    });
+
+  }
   return checkReviewIdExists(review_id)
-  .then(() => {
-    
-  })
+    .then(() => {
+      const templateKey = ['inc_votes'];
+      const votesBodyKey = Object.keys(votes);
 
+      if (JSON.stringify(templateKey) !== JSON.stringify(votesBodyKey)) {
+        return Promise.reject({
+          status: 400,
+          msg: "bad request body should contain an object with the following element: inc_votes",
+        });
+      }
 
-
-}
+      if (isNaN(votes.inc_votes)) {
+        return Promise.reject({
+          status: 400,
+          msg: "inc votes must be of type: integer",
+        });
+      }
+    })
+    .then(() => {
+      return db.qeury(
+        `UPDATE reviews Set votes = votes + $1 WHERE review_id = $2 RETURNING*`,
+        [votes.inc_votes, review_id]
+      );
+    }).then((review)=>{
+      return comment.rows
+    })
+};

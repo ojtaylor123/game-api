@@ -232,3 +232,50 @@ describe("post comments by review ID", () => {
       });
   });
 });
+
+
+describe('patching review votes', () => {
+
+  test("checking the review exists", () => {
+    const newVotes = {
+      inc_votes : 22
+    };
+
+    return request(app)
+      .patch("/api/reviews/4324")
+      .send(newVotes)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("review ID not found");
+      });
+  });
+
+  test("checking review ID is an integer", () => {
+    const newVotes = {
+      inc_votes : 22
+    };
+
+    return request(app)
+      .patch("/api/reviews/sfsfs")
+      .send(newVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("review ID must be an integer");
+      });
+  });
+  
+
+  test("testing if inc votes is of the correct data type", () => {
+    const newVotes = {
+      inc_votes : 'hellow'
+    };
+
+    return request(app)
+      .patch("/api/reviews/4")
+      .send(newVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("inc votes must be of type: integer");
+      });
+  });
+});
