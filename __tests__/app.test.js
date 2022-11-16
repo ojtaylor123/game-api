@@ -133,7 +133,6 @@ describe("get review comments by ID ", () => {
           descending: true,
         });
 
-        
         comments.forEach((comment) => {
           expect(comment).toMatchObject({
             review_id: 3,
@@ -147,34 +146,89 @@ describe("get review comments by ID ", () => {
       });
   });
 
-  test('given an invalid ID should reject with a 400 and a message', () => {
+  test("given an invalid ID should reject with a 400 and a message", () => {
     return request(app)
       .get("/api/reviews/hello/comments")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe('Invalid query review ID must be int')
-      })
-    
+        expect(body.msg).toBe("Invalid query review ID must be int");
+      });
   });
 
-  test('given a valid but unused ID invokes check review ID and gives a 404', () => {
+  test("given a valid but unused ID invokes check review ID and gives a 404", () => {
     return request(app)
-    .get("/api/reviews/36/comments")
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toBe('review ID not found')
-    })
+      .get("/api/reviews/36/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("review ID not found");
+      });
   });
 
-  test.only('given a valid review with no IDs returns a 204 with no content', () => {
+  test("given a valid review with no IDs returns a 204 with no content", () => {
     return request(app)
-    .get("/api/reviews/4/comments")
-    .expect(404)
-    .then(({ body }) => {
-      
-      expect(body.msg).toBe('review ID found but no comments attatched')
+      .get("/api/reviews/4/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("review ID found but no comments attatched");
+      });
+  });
+});
 
-      
-    })
+describe("post comments by review ID", () => {
+  test("gives an invalid body for posting should result in a status 400 and invalid query message", () => {
+    const newComment = {
+      comment_id: 34,
+      squirel: 39,
+      timmy: "name",
+    };
+    return request(app)
+      .post("/api/reviews/3/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe(
+          "bad request body should contain an object with the following elements: username, body"
+        );
+      });
+  });
+
+  test("should return a valid new entry having given a valid new comment", () => {
+    const newComment = {
+      username: "philippaclaire9",
+      body: "best game ever",
+    };
+    return request(app)
+      .post("/api/reviews/3/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+
+        expect(comment && typeof comment === "object").toBe(true);
+
+        expect(comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: "best game ever",
+          review_id: 3,
+          votes: 0,
+          author: "philippaclaire9",
+          created_at: expect.any(String),
+        });
+      });
+  });
+
+  test("using an invalid username the test should return a 404 form the util funciton  ", () => {
+    const newComment = {
+      username: "daveTheAverageSeminar3GigaChad",
+      body: "best game ever",
+    };
+
+    return request(app)
+      .post("/api/reviews/4/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("username does not exist");
+      });
   });
 });
