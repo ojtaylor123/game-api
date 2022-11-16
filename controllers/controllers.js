@@ -51,7 +51,8 @@ exports.getReviewCommentsById = (req, res, next) => {
 
 exports.postCommentsByReviewId = (req, res, next) => {
   const { review_id } = req.params;
-  commentBody = req.body;
+
+  const commentBody = req.body;
 
   insertCommentsByReviewId(review_id, commentBody)
     .then((comment) => {

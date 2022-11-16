@@ -89,14 +89,16 @@ exports.fetchReviewCommentsById = (review_id) => {
 };
 //task 7
 exports.insertCommentsByReviewId = (review_id, commentBody) => {
+  if (isNaN(review_id)) {
+    return Promise.reject({
+      status: 400,
+      msg: "bad request review_id should be a number",
+    });
+  }
+
   return checkReviewIdExists(review_id)
     .then(() => {
-      const templateKeys = ["username", "body"].sort();
-      const commentBodyKeys = Object.keys(commentBody).sort();
-
-   
-
-      if (JSON.stringify(templateKeys) !== JSON.stringify(commentBodyKeys)) {
+      if (!commentBody.username && !commentBody.body) {
         return Promise.reject({
           status: 400,
           msg: "bad request body should contain an object with the following elements: username, body",
