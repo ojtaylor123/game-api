@@ -1,4 +1,4 @@
-const {fetchCategories, fetchReviews, fetchReviewsById,fetchReviewCommentsById} = require('../models/models')
+const {fetchCategories, fetchReviews, fetchReviewsById,fetchReviewCommentsById,insertCommentsByReviewId} = require('../models/models')
 
 
 
@@ -40,6 +40,20 @@ exports.getReviewCommentsById = (req, res, next) => {
   fetchReviewCommentsById(review_id)
     .then((comments) => {
       res.send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+
+exports.postCommentsByReviewId = (req, res, next) => {
+  const { review_id } = req.params;
+  commentBody = req.body;
+
+  insertCommentsByReviewId(review_id, commentBody)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch((err) => {
       next(err);

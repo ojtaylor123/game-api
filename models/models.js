@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 const format = require("pg-format");
-const { checkReviewIdExists } = require("./utils");
+const { checkReviewIdExists, checkUserExists } = require("./utils");
 
 exports.fetchCategories = () => {
   return db
@@ -85,5 +85,33 @@ exports.fetchReviewCommentsById = (review_id) => {
         });
       }
       return comments.rows;
+    });
+};
+
+exports.insertCommentsByReviewId = (review_id, commentBody) => {
+  return checkReviewIdExists(review_id)
+    .then(() => {
+      const templateKeys = ["username", "body"].sort();
+      const commentBodyKeys = Object.keys(commentBody).sort();
+
+   
+
+      if (JSON.stringify(templateKeys) !== JSON.stringify(commentBodyKeys)) {
+        return Promise.reject({
+          status: 400,
+          msg: "bad request body should contain an object with the following elements: username, body",
+        });
+      }
+    })
+    .then(() => {
+      return checkUserExists(commentBody.username);
+    })
+    .then(() => {
+      const queryText = `INSERT INTO comments (body, author,review_id) VALUES ('${commentBody.body}', '${commentBody.username}', ${review_id}) RETURNING *; `;
+
+      return db.query(queryText);
+    })
+    .then((comment) => {
+      return comment.rows[0];
     });
 };
