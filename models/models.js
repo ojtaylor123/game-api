@@ -87,7 +87,7 @@ exports.fetchReviewCommentsById = (review_id) => {
       return comments.rows;
     });
 };
-
+//task 7
 exports.insertCommentsByReviewId = (review_id, commentBody) => {
   return checkReviewIdExists(review_id)
     .then(() => {
