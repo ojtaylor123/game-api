@@ -262,7 +262,27 @@ describe("post comments by review ID", () => {
         expect(body.msg).toBe("review ID not found");
       });
   });
+});
 
+describe("GET /api/users", () => {
+  test("returns an array of reviews sorted by the creation date of the reviews (desc) and containing a number of comments column", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
 
-  
+        expect(Array.isArray(users)).toBe(true);
+        expect(users.length).toBeGreaterThan(0);
+        expect(users[0] && typeof users[0] === "object").toBe(true);
+
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
 });

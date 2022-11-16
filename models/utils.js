@@ -10,7 +10,7 @@ exports.checkReviewIdExists = (review_id) => {
     });
 };
 
-//task 7
+
 exports.checkUserExists = (username) => {
   return db
     .query(`SELECT * FROM users WHERE username = $1`, [username])

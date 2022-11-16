@@ -1,4 +1,4 @@
-const { getCategories, getReviews,getReviewById, getReviewCommentsById, postCommentsByReviewId} = require("./controllers/controllers");
+const { getCategories, getReviews,getReviewById, getReviewCommentsById, postCommentsByReviewId,getUsers} = require("./controllers/controllers");
 
 
 
@@ -16,7 +16,7 @@ app.get("/api/reviews/:review_id/comments", getReviewCommentsById);
 
 app.post("/api/reviews/:review_id/comments", postCommentsByReviewId);
 
-
+app.get("/api/users",getUsers)
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Route not found" });

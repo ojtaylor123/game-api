@@ -1,4 +1,4 @@
-const {fetchCategories, fetchReviews, fetchReviewsById,fetchReviewCommentsById,insertCommentsByReviewId} = require('../models/models')
+const {fetchCategories, fetchReviews, fetchReviewsById,fetchReviewCommentsById,insertCommentsByReviewId,fetchUsers} = require('../models/models')
 
 
 
@@ -47,7 +47,6 @@ exports.getReviewCommentsById = (req, res, next) => {
 };
 
 
-//task 7
 
 exports.postCommentsByReviewId = (req, res, next) => {
   const { review_id } = req.params;
@@ -62,6 +61,18 @@ exports.postCommentsByReviewId = (req, res, next) => {
       next(err);
     });
 };
+
+
+exports.getUsers = (req,res,next) => {
+
+  fetchUsers().then((users) => {
+    res.send({ users });
+  })
+  .catch((err) =>{
+    next(err)
+  })
+
+}
 
 
 

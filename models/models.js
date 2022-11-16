@@ -87,7 +87,9 @@ exports.fetchReviewCommentsById = (review_id) => {
       return comments.rows;
     });
 };
-//task 7
+
+
+
 exports.insertCommentsByReviewId = (review_id, commentBody) => {
   if (isNaN(review_id)) {
     return Promise.reject({
@@ -117,3 +119,18 @@ exports.insertCommentsByReviewId = (review_id, commentBody) => {
       return comment.rows[0];
     });
 };
+
+
+
+exports.fetchUsers = () =>{
+
+  return db
+    .query(
+      `
+        SELECT * FROM users;
+    `
+    )
+    .then((result) => {
+      return result.rows;
+    });
+}
