@@ -94,7 +94,7 @@ exports.insertCommentsByReviewId = (review_id, commentBody) => {
       const templateKeys = ["username", "body"].sort();
       const commentBodyKeys = Object.keys(commentBody).sort();
 
-      //find the user first you tit
+   
 
       if (JSON.stringify(templateKeys) !== JSON.stringify(commentBodyKeys)) {
         return Promise.reject({
