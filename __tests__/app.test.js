@@ -173,6 +173,7 @@ describe("get review comments by ID ", () => {
       });
   });
 });
+//task 7
 
 describe("post comments by review ID", () => {
   test("gives an invalid body for posting should result in a status 400 and invalid query message", () => {
@@ -231,4 +232,37 @@ describe("post comments by review ID", () => {
         expect(body.msg).toBe("username does not exist");
       });
   });
+
+  test("using an invalid username the test should return a 404 form the util funciton  ", () => {
+    const newComment = {
+      username: "daveTheAverageSeminar3GigaChad",
+      body: "best game ever",
+    };
+
+    return request(app)
+      .post("/api/reviews/eifnwe/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request review_id should be a number");
+      });
+  });
+
+  test("using an id that doesnt exist", () => {
+    const newComment = {
+      username: "daveTheAverageSeminar3GigaChad",
+      body: "best game ever",
+    };
+
+    return request(app)
+      .post("/api/reviews/3284329/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("review ID not found");
+      });
+  });
+
+
+  
 });
