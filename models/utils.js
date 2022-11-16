@@ -10,6 +10,7 @@ exports.checkReviewIdExists = async (review_id) => {
     });
 };
 
+//task 7
 exports.checkUserExists = async (username) => {
   return db
     .query(`SELECT * FROM users WHERE username = $1`, [username])
