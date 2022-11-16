@@ -233,12 +233,10 @@ describe("post comments by review ID", () => {
   });
 });
 
-
-describe('patching review votes', () => {
-
+describe("patching review votes", () => {
   test("checking the review exists", () => {
     const newVotes = {
-      inc_votes : 22
+      inc_votes: 22,
     };
 
     return request(app)
@@ -252,7 +250,7 @@ describe('patching review votes', () => {
 
   test("checking review ID is an integer", () => {
     const newVotes = {
-      inc_votes : 22
+      inc_votes: 22,
     };
 
     return request(app)
@@ -263,11 +261,10 @@ describe('patching review votes', () => {
         expect(body.msg).toBe("review ID must be an integer");
       });
   });
-  
 
   test("testing if inc votes is of the correct data type", () => {
     const newVotes = {
-      inc_votes : 'hellow'
+      inc_votes: "hellow",
     };
 
     return request(app)
@@ -276,6 +273,69 @@ describe('patching review votes', () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("inc votes must be of type: integer");
+      });
+  });
+
+  test("testing if inc votes is of the correct data type", () => {
+    const newVotes = {
+      inc_votes: "hellow",
+    };
+
+    return request(app)
+      .patch("/api/reviews/4")
+      .send(newVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("inc votes must be of type: integer");
+      });
+  });
+
+  test("testing if given a valid request and a valid inc votes positivley increments the votes and returns it ", () => {
+    const newVotes = {
+      inc_votes: 34,
+    };
+
+    return request(app)
+      .patch("/api/reviews/4")
+      .send(newVotes)
+      .expect(201)
+      .then(({ body }) => {
+        const { review } = body;
+
+       
+
+        expect(review && typeof review === "object").toBe(true);
+
+        expect(review).toMatchObject({
+          review_id: 4,
+          votes: 41,
+          title: expect.any(String)
+        });
+      });
+  });
+
+
+  test("when given a negative number it decreases the number of votes ", () => {
+    const newVotes = {
+      inc_votes: -2,
+    };
+
+    return request(app)
+      .patch("/api/reviews/4")
+      .send(newVotes)
+      .expect(201)
+      .then(({ body }) => {
+        const { review } = body;
+
+       
+
+        expect(review && typeof review === "object").toBe(true);
+
+        expect(review).toMatchObject({
+          review_id: 4,
+          votes: 5,
+          title: expect.any(String)
+        });
       });
   });
 });

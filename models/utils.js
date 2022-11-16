@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 
-exports.checkReviewIdExists = async (review_id) => {
+exports.checkReviewIdExists = (review_id) => {
   return db
     .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
     .then((queryOutput) => {
@@ -10,7 +10,7 @@ exports.checkReviewIdExists = async (review_id) => {
     });
 };
 
-exports.checkUserExists = async (username) => {
+exports.checkUserExists = (username) => {
   return db
     .query(`SELECT * FROM users WHERE username = $1`, [username])
     .then((queryOutput) => {

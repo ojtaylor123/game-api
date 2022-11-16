@@ -49,7 +49,7 @@ exports.getReviewCommentsById = (req, res, next) => {
 
 exports.postCommentsByReviewId = (req, res, next) => {
   const { review_id } = req.params;
-  commentBody = req.body;
+  const commentBody = req.body;
 
   insertCommentsByReviewId(review_id, commentBody)
     .then((comment) => {
@@ -63,11 +63,11 @@ exports.postCommentsByReviewId = (req, res, next) => {
 
 exports.patchReviewVotes = (req,res,next) => {
   const { review_id } = req.params;
-  votes = req.body;
+  const votes = req.body;
 
   updateReviewVotes(review_id, votes)
   .then((review)=>{
-    res.send({ review });
+    res.status(201).send({ review });
   })
   .catch((err) => {
     next(err);

@@ -125,10 +125,7 @@ exports.updateReviewVotes = (review_id, votes) => {
   }
   return checkReviewIdExists(review_id)
     .then(() => {
-      const templateKey = ['inc_votes'];
-      const votesBodyKey = Object.keys(votes);
-
-      if (JSON.stringify(templateKey) !== JSON.stringify(votesBodyKey)) {
+      if (!votes.inc_votes) {
         return Promise.reject({
           status: 400,
           msg: "bad request body should contain an object with the following element: inc_votes",
@@ -143,11 +140,11 @@ exports.updateReviewVotes = (review_id, votes) => {
       }
     })
     .then(() => {
-      return db.qeury(
+      return db.query(
         `UPDATE reviews Set votes = votes + $1 WHERE review_id = $2 RETURNING*`,
         [votes.inc_votes, review_id]
       );
     }).then((review)=>{
-      return comment.rows
+      return review.rows[0]
     })
 };
