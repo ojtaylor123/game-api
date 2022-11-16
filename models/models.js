@@ -115,3 +115,14 @@ exports.insertCommentsByReviewId = (review_id, commentBody) => {
       return comment.rows[0];
     });
 };
+
+exports.updateReviewVotes = (review_id,votes) =>{
+
+  return checkReviewIdExists(review_id)
+  .then(() => {
+    
+  })
+
+
+
+}

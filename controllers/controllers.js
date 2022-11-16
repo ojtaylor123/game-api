@@ -1,4 +1,4 @@
-const {fetchCategories, fetchReviews, fetchReviewsById,fetchReviewCommentsById,insertCommentsByReviewId} = require('../models/models')
+const {fetchCategories, fetchReviews, fetchReviewsById,fetchReviewCommentsById,insertCommentsByReviewId, updateReviewVotes} = require('../models/models')
 
 
 
@@ -59,6 +59,23 @@ exports.postCommentsByReviewId = (req, res, next) => {
       next(err);
     });
 };
+
+
+exports.patchReviewVotes = (req,res,next) => {
+  const { review_id } = req.params;
+  votes = req.body;
+
+  updateReviewVotes(review_id, votes)
+  .then((review)=>{
+    res.send({ review });
+  })
+  .catch((err) => {
+    next(err);
+  });
+
+}
+
+
 
 
 
