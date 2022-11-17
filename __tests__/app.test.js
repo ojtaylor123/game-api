@@ -81,9 +81,7 @@ describe("GET /api/reviews", () => {
       .then(({ body }) => {
         const { reviews } = body;
 
-        expect(Array.isArray(reviews)).toBe(true);
         expect(reviews.length).toBeGreaterThan(0);
-        expect(reviews[0] && typeof reviews[0] === "object").toBe(true);
         expect(reviews).toBeSortedBy("created_at", {
           descending: true,
         });
@@ -110,9 +108,7 @@ describe("GET /api/reviews", () => {
       .then(({ body }) => {
         const { reviews } = body;
 
-        expect(Array.isArray(reviews)).toBe(true);
         expect(reviews.length).toBeGreaterThan(0);
-        expect(reviews[0] && typeof reviews[0] === "object").toBe(true);
         expect(reviews).toBeSortedBy("created_at", {
           ascending: true,
         });
@@ -132,20 +128,16 @@ describe("GET /api/reviews", () => {
       });
   });
 
-
   test("query the category and produce a list of reviews within that category in ASC sorted by votes", () => {
     return request(app)
-      .get("/api/reviews?category=dexterity&order=asc&sort_by=votes")
+      .get("/api/reviews?category=social deduction&order=asc&sort_by=votes")
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
 
-        expect(Array.isArray(reviews)).toBe(true);
         expect(reviews.length).toBeGreaterThan(0);
-        expect(reviews[0] && typeof reviews[0] === "object").toBe(true);
-        expect(reviews).toBeSortedBy("social deduction", {
+        expect(reviews).toBeSortedBy("votes", {
           ascending: true,
-          
         });
 
         reviews.forEach((review) => {
@@ -153,7 +145,7 @@ describe("GET /api/reviews", () => {
             owner: expect.any(String),
             title: expect.any(String),
             review_id: expect.any(Number),
-            category: "dexterity",
+            category: "social deduction",
             review_img_url: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
@@ -162,8 +154,6 @@ describe("GET /api/reviews", () => {
         });
       });
   });
-
-  
 
   test("checks for invalid category query", () => {
     return request(app)
@@ -174,25 +164,23 @@ describe("GET /api/reviews", () => {
       });
   });
 
-
-test("order by isnt asc or desc", () => {
-  return request(app)
-    .get("/api/reviews?order=elephants")
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toBe("not a valid order");
-    });
-});
-
-test('sort by isnt a valid column', () => {
-  return request(app)
-  .get("/api/reviews?sort_by=height")
-  .expect(400)
-  .then(({ body }) => {
-    expect(body.msg).toBe("not a valid sort by");
+  test("order by isnt asc or desc", () => {
+    return request(app)
+      .get("/api/reviews?order=elephants")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not a valid order");
+      });
   });
-  
-});
+
+  test("sort by isnt a valid column", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=height")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not a valid sort by");
+      });
+  });
 });
 
 describe("get reviews by id", () => {
