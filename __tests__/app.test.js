@@ -381,8 +381,30 @@ describe('remove comment by id', () => {
   test('should return the deleted comment when given a valid ID ', () => {
     return request(app)
       .delete("/api/comments/2")
-      .expect(202)
+      .expect(204)
+
+    })
       
+  
+  test('should return a 400 when an invalid ID is given ', () => {
+
+    return request(app)
+    .delete("/api/comments/fuewfeiuwfe")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("comment_id must be an integer")
+    })
+  })
+
+  test('should return a 404 when given a valid but not used ID', () => {
+
+    return request(app)
+    .delete("/api/comments/234")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("comment does not exist")
+    })
+  })
+    
   });
   
-});
