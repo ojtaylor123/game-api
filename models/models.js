@@ -123,8 +123,7 @@ exports.updateReviewVotes = (review_id, votes) => {
     });
 
   }
-  return checkReviewIdExists(review_id)
-    .then(() => {
+    
       if (!votes.inc_votes) {
         return Promise.reject({
           status: 400,
@@ -138,13 +137,17 @@ exports.updateReviewVotes = (review_id, votes) => {
           msg: "inc votes must be of type: integer",
         });
       }
-    })
-    .then(() => {
+  
       return db.query(
         `UPDATE reviews Set votes = votes + $1 WHERE review_id = $2 RETURNING*`,
         [votes.inc_votes, review_id]
-      );
-    }).then((review)=>{
+      )
+    .then((review)=>{
+
+      if(review.rows.length === 0){
+        return Promise.reject({status: 404, msg: 'review ID not found'})
+      }else{
       return review.rows[0]
+      }
     })
 };
