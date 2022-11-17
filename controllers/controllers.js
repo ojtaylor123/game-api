@@ -47,6 +47,8 @@ exports.getReviewCommentsById = (req, res, next) => {
 };
 
 
+//task 7
+
 exports.postCommentsByReviewId = (req, res, next) => {
   const { review_id } = req.params;
   const commentBody = req.body;
