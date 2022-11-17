@@ -134,3 +134,42 @@ exports.fetchUsers = () =>{
       return result.rows;
     });
 }
+=======
+exports.updateReviewVotes = (review_id, votes) => {
+
+  if(isNaN(review_id)){
+    return Promise.reject({
+      status: 400,
+      msg: "review ID must be an integer",
+    });
+
+  }
+    
+      if (!votes.inc_votes) {
+        return Promise.reject({
+          status: 400,
+          msg: "bad request body should contain an object with the following element: inc_votes",
+        });
+      }
+
+      if (isNaN(votes.inc_votes)) {
+        return Promise.reject({
+          status: 400,
+          msg: "inc votes must be of type: integer",
+        });
+      }
+  
+      return db.query(
+        `UPDATE reviews Set votes = votes + $1 WHERE review_id = $2 RETURNING*`,
+        [votes.inc_votes, review_id]
+      )
+    .then((review)=>{
+
+      if(review.rows.length === 0){
+        return Promise.reject({status: 404, msg: 'review ID not found'})
+      }else{
+      return review.rows[0]
+      }
+    })
+};
+

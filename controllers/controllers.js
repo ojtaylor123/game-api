@@ -1,4 +1,6 @@
-const {fetchCategories, fetchReviews, fetchReviewsById,fetchReviewCommentsById,insertCommentsByReviewId,fetchUsers} = require('../models/models')
+
+const {fetchCategories, fetchReviews, fetchReviewsById,fetchReviewCommentsById,insertCommentsByReviewId,fetchUsers, updateReviewVotes} = require('../models/models')
+
 
 
 
@@ -50,7 +52,6 @@ exports.getReviewCommentsById = (req, res, next) => {
 
 exports.postCommentsByReviewId = (req, res, next) => {
   const { review_id } = req.params;
-
   const commentBody = req.body;
 
   insertCommentsByReviewId(review_id, commentBody)
@@ -63,6 +64,7 @@ exports.postCommentsByReviewId = (req, res, next) => {
 };
 
 
+
 exports.getUsers = (req,res,next) => {
 
   fetchUsers().then((users) => {
@@ -71,6 +73,20 @@ exports.getUsers = (req,res,next) => {
   .catch((err) =>{
     next(err)
   })
+  
+  
+exports.patchReviewVotes = (req,res,next) => {
+  const { review_id } = req.params;
+  const votes = req.body;
+
+  updateReviewVotes(review_id, votes)
+  .then((review)=>{
+    res.status(202).send({ review });
+  })
+  .catch((err) => {
+    next(err);
+  });
+
 
 }
 

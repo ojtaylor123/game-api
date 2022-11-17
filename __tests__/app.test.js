@@ -176,7 +176,7 @@ describe("get review comments by ID ", () => {
 //task 7
 
 describe("post comments by review ID", () => {
-  test("gives an invalid body for posting should result in a status 400 and invalid query message", () => {
+  test("gives an invalid body for posting should result in a status 400 and invalid query message when inc_votes isnt present", () => {
     const newComment = {
       comment_id: 34,
       squirel: 39,
@@ -204,8 +204,6 @@ describe("post comments by review ID", () => {
       .expect(201)
       .then(({ body }) => {
         const { comment } = body;
-
-        expect(comment && typeof comment === "object").toBe(true);
 
         expect(comment).toMatchObject({
           comment_id: expect.any(Number),
@@ -282,6 +280,100 @@ describe("GET /api/users", () => {
             name: expect.any(String),
             avatar_url: expect.any(String),
           });
+        });
+      });
+  });
+});
+
+describe("patching review votes", () => {
+  test("checking the review exists", () => {
+    const newVotes = {
+      inc_votes: 22,
+    };
+
+    return request(app)
+      .patch("/api/reviews/4324")
+      .send(newVotes)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("review ID not found");
+      });
+  });
+
+  test("checking review ID is an integer", () => {
+    const newVotes = {
+      inc_votes: 22,
+    };
+
+    return request(app)
+      .patch("/api/reviews/sfsfs")
+      .send(newVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("review ID must be an integer");
+      });
+  });
+
+  test("testing if inc votes is of the correct data type", () => {
+    const newVotes = {
+      inc_votes: "hellow",
+    };
+
+    return request(app)
+      .patch("/api/reviews/4")
+      .send(newVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("inc votes must be of type: integer");
+      });
+  });
+
+
+  test("testing if given a valid request and a valid inc votes positivley increments the votes and returns it ", () => {
+    const newVotes = {
+      inc_votes: 34,
+    };
+
+    return request(app)
+      .patch("/api/reviews/4")
+      .send(newVotes)
+      .expect(202)
+      .then(({ body }) => {
+        const { review } = body;
+
+       
+
+        expect(review && typeof review === "object").toBe(true);
+
+        expect(review).toMatchObject({
+          review_id: 4,
+          votes: 41,
+          title: expect.any(String)
+        });
+      });
+  });
+
+
+  test("when given a negative number it decreases the number of votes ", () => {
+    const newVotes = {
+      inc_votes: -2,
+    };
+
+    return request(app)
+      .patch("/api/reviews/4")
+      .send(newVotes)
+      .expect(202)
+      .then(({ body }) => {
+        const { review } = body;
+
+       
+
+        expect(review && typeof review === "object").toBe(true);
+
+        expect(review).toMatchObject({
+          review_id: 4,
+          votes: 5,
+          title: expect.any(String)
         });
       });
   });
