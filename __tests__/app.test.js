@@ -68,7 +68,7 @@ describe("GET /api/reviews", () => {
             review_img_url: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
-            comment_count: expect.any(String),
+            comment_count: expect.any(Number),
           });
         });
       });
@@ -97,7 +97,7 @@ describe("GET /api/reviews", () => {
             review_img_url: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
-            comment_count: expect.any(String),
+            comment_count: expect.any(Number),
           });
         });
       });
@@ -126,7 +126,7 @@ describe("GET /api/reviews", () => {
             review_img_url: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
-            comment_count: expect.any(String),
+            comment_count: expect.any(Number),
           });
         });
       });
@@ -157,7 +157,7 @@ describe("GET /api/reviews", () => {
             review_img_url: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
-            comment_count: expect.any(String),
+            comment_count: expect.any(Number),
           });
         });
       });
@@ -234,7 +234,7 @@ describe("get reviews by id", () => {
           category: expect.any(String),
           owner: expect.any(String),
           created_at: expect.any(String),
-          comment_count: expect.any(String),
+          comment_count: expect.any(Number),
         });
       });
   });
@@ -251,7 +251,7 @@ describe("get reviews by id", () => {
 
         expect(review[0]).toMatchObject({
           review_id: 3,
-          comment_count: "3",
+          comment_count: 3,
         });
       });
   });

@@ -26,7 +26,7 @@ exports.fetchReviews = (category, order = "desc", sort_by = "created_at") => {
     return Promise.reject({ status: 400, msg: "not a valid order" });
   }
 
-  let queryText = `SELECT owner, title,reviews.review_id, category, review_img_url, reviews.created_at, reviews.votes, designer, COUNT(comments.review_id) AS comment_count
+  let queryText = `SELECT owner, title,reviews.review_id, category, review_img_url, reviews.created_at, reviews.votes, designer, CAST(COUNT(comments.review_id) AS INT) AS comment_count
   FROM reviews
   LEFT JOIN comments ON reviews.review_id = comments.review_id
   `;
@@ -66,7 +66,7 @@ exports.fetchReviewsById = (review_id) => {
     .query(
       `
     SELECT reviews.review_id, title, review_body, designer, review_img_url, reviews.votes,category, owner, 
-    reviews.created_at, COUNT(comments.review_id) AS comment_count
+    reviews.created_at, CAST(COUNT(comments.review_id)AS INT) AS comment_count
     FROM reviews
     LEFT JOIN comments ON reviews.review_id = comments.review_id
     WHERE reviews.review_id = $1
