@@ -175,7 +175,7 @@ describe("get review comments by ID ", () => {
 });
 
 describe("post comments by review ID", () => {
-  test("gives an invalid body for posting should result in a status 400 and invalid query message", () => {
+  test("gives an invalid body for posting should result in a status 400 and invalid query message when inc_votes isnt present", () => {
     const newComment = {
       comment_id: 34,
       squirel: 39,
@@ -203,8 +203,6 @@ describe("post comments by review ID", () => {
       .expect(201)
       .then(({ body }) => {
         const { comment } = body;
-
-        expect(comment && typeof comment === "object").toBe(true);
 
         expect(comment).toMatchObject({
           comment_id: expect.any(Number),
@@ -276,19 +274,6 @@ describe("patching review votes", () => {
       });
   });
 
-  test("testing if inc votes is of the correct data type", () => {
-    const newVotes = {
-      inc_votes: "hellow",
-    };
-
-    return request(app)
-      .patch("/api/reviews/4")
-      .send(newVotes)
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("inc votes must be of type: integer");
-      });
-  });
 
   test("testing if given a valid request and a valid inc votes positivley increments the votes and returns it ", () => {
     const newVotes = {
@@ -298,7 +283,7 @@ describe("patching review votes", () => {
     return request(app)
       .patch("/api/reviews/4")
       .send(newVotes)
-      .expect(201)
+      .expect(202)
       .then(({ body }) => {
         const { review } = body;
 
@@ -323,7 +308,7 @@ describe("patching review votes", () => {
     return request(app)
       .patch("/api/reviews/4")
       .send(newVotes)
-      .expect(201)
+      .expect(202)
       .then(({ body }) => {
         const { review } = body;
 

@@ -67,7 +67,7 @@ exports.patchReviewVotes = (req,res,next) => {
 
   updateReviewVotes(review_id, votes)
   .then((review)=>{
-    res.status(201).send({ review });
+    res.status(202).send({ review });
   })
   .catch((err) => {
     next(err);
