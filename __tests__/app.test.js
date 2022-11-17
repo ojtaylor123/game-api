@@ -114,6 +114,24 @@ describe("get reviews by id", () => {
           category: expect.any(String),
           owner: expect.any(String),
           created_at: expect.any(String),
+          comment_count: expect.any(String),
+        });
+      });
+  });
+
+  test("testing a specific review for its comment count", () => {
+    return request(app)
+      .get("/api/reviews/3")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(Array.isArray(review)).toBe(true);
+        expect(review.length).toBe(1);
+        expect(review[0] && typeof review[0] === "object").toBe(true);
+
+        expect(review[0]).toMatchObject({
+          review_id: 3,
+          comment_count: "3",
         });
       });
   });
@@ -328,7 +346,6 @@ describe("patching review votes", () => {
       });
   });
 
-
   test("testing if given a valid request and a valid inc votes positivley increments the votes and returns it ", () => {
     const newVotes = {
       inc_votes: 34,
@@ -341,18 +358,15 @@ describe("patching review votes", () => {
       .then(({ body }) => {
         const { review } = body;
 
-       
-
         expect(review && typeof review === "object").toBe(true);
 
         expect(review).toMatchObject({
           review_id: 4,
           votes: 41,
-          title: expect.any(String)
+          title: expect.any(String),
         });
       });
   });
-
 
   test("when given a negative number it decreases the number of votes ", () => {
     const newVotes = {
@@ -366,14 +380,12 @@ describe("patching review votes", () => {
       .then(({ body }) => {
         const { review } = body;
 
-       
-
         expect(review && typeof review === "object").toBe(true);
 
         expect(review).toMatchObject({
           review_id: 4,
           votes: 5,
-          title: expect.any(String)
+          title: expect.any(String),
         });
       });
   });

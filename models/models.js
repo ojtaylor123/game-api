@@ -42,9 +42,12 @@ exports.fetchReviewsById = (review_id) => {
   return db
     .query(
       `
-    SELECT *
+    SELECT reviews.review_id, title, review_body, designer, review_img_url, reviews.votes,category, owner, 
+    reviews.created_at, COUNT(comments.review_id) AS comment_count
     FROM reviews
-    WHERE review_id = $1;  
+    LEFT JOIN comments ON reviews.review_id = comments.review_id
+    WHERE reviews.review_id = $1
+    GROUP BY reviews.review_id;
     `,
       [review_id]
     )
@@ -134,7 +137,7 @@ exports.fetchUsers = () =>{
       return result.rows;
     });
 }
-=======
+
 exports.updateReviewVotes = (review_id, votes) => {
 
   if(isNaN(review_id)){
