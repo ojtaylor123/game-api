@@ -16,7 +16,10 @@ exports.getCategories = (req, res, next) => {
 
 
 exports.getReviews = (req, res, next) => {
-  fetchReviews()
+
+  const {category, order, sort_by} = req.query
+
+  fetchReviews(category,order,sort_by)
   .then((reviews) => {
     res.send({ reviews });
   })
@@ -73,6 +76,8 @@ exports.getUsers = (req,res,next) => {
   .catch((err) =>{
     next(err)
   })
+
+}
   
   
 exports.patchReviewVotes = (req,res,next) => {
