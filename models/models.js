@@ -87,7 +87,9 @@ exports.fetchReviewCommentsById = (review_id) => {
       return comments.rows;
     });
 };
-//task 7
+
+
+
 exports.insertCommentsByReviewId = (review_id, commentBody) => {
   if (isNaN(review_id)) {
     return Promise.reject({
@@ -118,6 +120,21 @@ exports.insertCommentsByReviewId = (review_id, commentBody) => {
     });
 };
 
+
+
+exports.fetchUsers = () =>{
+
+  return db
+    .query(
+      `
+        SELECT * FROM users;
+    `
+    )
+    .then((result) => {
+      return result.rows;
+    });
+}
+=======
 exports.updateReviewVotes = (review_id, votes) => {
 
   if(isNaN(review_id)){
@@ -155,3 +172,4 @@ exports.updateReviewVotes = (review_id, votes) => {
       }
     })
 };
+
