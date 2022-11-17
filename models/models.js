@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 const format = require("pg-format");
-const { checkReviewIdExists, checkUserExists } = require("./utils");
+const { checkReviewIdExists, checkUserExists, checkCommentExists } = require("./utils");
 
 exports.fetchCategories = () => {
   return db
@@ -134,7 +134,7 @@ exports.fetchUsers = () =>{
       return result.rows;
     });
 }
-=======
+
 exports.updateReviewVotes = (review_id, votes) => {
 
   if(isNaN(review_id)){
@@ -173,3 +173,19 @@ exports.updateReviewVotes = (review_id, votes) => {
     })
 };
 
+
+
+
+exports.removeCommentByID = (comment_id) => {
+
+  if(isNaN(comment_id)){
+    return Promise.reject({status: 400, msg: 'comment_id must be an integer'})
+  }
+  return checkCommentExists(comment_id).then(() => {
+
+    return db.query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *`,[comment_id])
+  }).then((comment)=> {
+    return comment.rows[0]
+  })
+
+}

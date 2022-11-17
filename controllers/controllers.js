@@ -1,5 +1,5 @@
 
-const {fetchCategories, fetchReviews, fetchReviewsById,fetchReviewCommentsById,insertCommentsByReviewId,fetchUsers, updateReviewVotes} = require('../models/models')
+const {fetchCategories, fetchReviews, fetchReviewsById,fetchReviewCommentsById,insertCommentsByReviewId,fetchUsers,removeCommentByID, updateReviewVotes} = require('../models/models')
 
 
 
@@ -73,7 +73,7 @@ exports.getUsers = (req,res,next) => {
   .catch((err) =>{
     next(err)
   })
-  
+}
   
 exports.patchReviewVotes = (req,res,next) => {
   const { review_id } = req.params;
@@ -87,6 +87,23 @@ exports.patchReviewVotes = (req,res,next) => {
     next(err);
   });
 
+
+}
+
+
+
+exports.deleteCommentByID = (req,res,next) =>{
+  const { comment_id } = req.params;
+
+  removeCommentByID(comment_id)
+  .then((comment)=>{
+    console.log(comment)
+    res.status(202).send({ comment })
+  })
+
+  .catch((err) => {
+    next(err);
+  })
 
 }
 

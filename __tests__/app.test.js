@@ -366,10 +366,6 @@ describe("patching review votes", () => {
       .then(({ body }) => {
         const { review } = body;
 
-       
-
-        expect(review && typeof review === "object").toBe(true);
-
         expect(review).toMatchObject({
           review_id: 4,
           votes: 5,
@@ -377,4 +373,16 @@ describe("patching review votes", () => {
         });
       });
   });
+});
+
+
+describe('remove comment by id', () => {
+
+  test('should return the deleted comment when given a valid ID ', () => {
+    return request(app)
+      .delete("/api/comments/2")
+      .expect(202)
+      
+  });
+  
 });
