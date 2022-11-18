@@ -68,9 +68,117 @@ describe("GET /api/reviews", () => {
             review_img_url: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
-            comment_count: expect.any(String),
+            comment_count: expect.any(Number),
           });
         });
+      });
+  });
+
+  test("query the category and produce a list of reviews within that category", () => {
+    return request(app)
+      .get("/api/reviews?category=social deduction")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+
+        expect(reviews.length).toBeGreaterThan(0);
+        expect(reviews).toBeSortedBy("created_at", {
+          descending: true,
+        });
+
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: "social deduction",
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+
+  test("query the category and produce a list of reviews within that category in ASC created at order", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+
+        expect(reviews.length).toBeGreaterThan(0);
+        expect(reviews).toBeSortedBy("created_at", {
+          ascending: true,
+        });
+
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: "dexterity",
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+
+  test("query the category and produce a list of reviews within that category in ASC sorted by votes", () => {
+    return request(app)
+      .get("/api/reviews?category=social deduction&order=asc&sort_by=votes")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+
+        expect(reviews.length).toBeGreaterThan(0);
+        expect(reviews).toBeSortedBy("votes", {
+          ascending: true,
+        });
+
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: "social deduction",
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+
+  test("checks for invalid category query", () => {
+    return request(app)
+      .get("/api/reviews?category=darts")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("category not found");
+      });
+  });
+
+  test("order by isnt asc or desc", () => {
+    return request(app)
+      .get("/api/reviews?order=elephants")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not a valid order");
+      });
+  });
+
+  test("sort by isnt a valid column", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=height")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not a valid sort by");
       });
   });
 });
@@ -114,6 +222,24 @@ describe("get reviews by id", () => {
           category: expect.any(String),
           owner: expect.any(String),
           created_at: expect.any(String),
+          comment_count: expect.any(Number),
+        });
+      });
+  });
+
+  test("testing a specific review for its comment count", () => {
+    return request(app)
+      .get("/api/reviews/3")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(Array.isArray(review)).toBe(true);
+        expect(review.length).toBe(1);
+        expect(review[0] && typeof review[0] === "object").toBe(true);
+
+        expect(review[0]).toMatchObject({
+          review_id: 3,
+          comment_count: 3,
         });
       });
   });
@@ -328,7 +454,6 @@ describe("patching review votes", () => {
       });
   });
 
-
   test("testing if given a valid request and a valid inc votes positivley increments the votes and returns it ", () => {
     const newVotes = {
       inc_votes: 34,
@@ -341,18 +466,15 @@ describe("patching review votes", () => {
       .then(({ body }) => {
         const { review } = body;
 
-       
-
         expect(review && typeof review === "object").toBe(true);
 
         expect(review).toMatchObject({
           review_id: 4,
           votes: 41,
-          title: expect.any(String)
+          title: expect.any(String),
         });
       });
   });
-
 
   test("when given a negative number it decreases the number of votes ", () => {
     const newVotes = {
@@ -365,11 +487,10 @@ describe("patching review votes", () => {
       .expect(202)
       .then(({ body }) => {
         const { review } = body;
-
         expect(review).toMatchObject({
           review_id: 4,
           votes: 5,
-          title: expect.any(String)
+          title: expect.any(String),
         });
       });
   });
