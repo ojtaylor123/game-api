@@ -12,11 +12,7 @@ const {
 const endPoints = require('../endpoints.json');
 
 
-exports.getEndpoints = (req, res, next) => {
-  
-res.send({ endPoints })
 
-};
 
 exports.getCategories = (req, res, next) => {
   fetchCategories()
