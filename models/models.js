@@ -2,9 +2,7 @@ const db = require("../db/connection");
 const format = require("pg-format");
 
 const {
-  checkReviewIdExists,
-  checkUserExists,
-  checkCommentExists,
+  checkExists,
 } = require("./utils");
 const reviews = require("../db/data/test-data/reviews");
 const { sort } = require("../db/data/test-data/reviews");
@@ -102,7 +100,7 @@ exports.fetchReviewCommentsById = (review_id) => {
     });
   }
 
-  return checkReviewIdExists(review_id)
+  return checkExists('reviews','review_id', review_id)
     .then(() => {
       return db.query(
         `SELECT comment_id, votes, created_at, author, body, review_id FROM
@@ -133,7 +131,7 @@ exports.insertCommentsByReviewId = (review_id, commentBody) => {
     });
   }
 
-  return checkReviewIdExists(review_id)
+  return checkExists('reviews','review_id',review_id)
     .then(() => {
       if (!commentBody.username && !commentBody.body) {
         return Promise.reject({
@@ -143,7 +141,7 @@ exports.insertCommentsByReviewId = (review_id, commentBody) => {
       }
     })
     .then(() => {
-      return checkUserExists(commentBody.username);
+      return checkExists('users','username',commentBody.username);
     })
     .then(() => {
       const queryText = `INSERT INTO comments (body, author,review_id) VALUES ('${commentBody.body}', '${commentBody.username}', ${review_id}) RETURNING *; `;
