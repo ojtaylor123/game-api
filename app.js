@@ -1,5 +1,5 @@
 
-const { getCategories, getReviews,getReviewById, getReviewCommentsById, postCommentsByReviewId, patchReviewVotes, getUsers, deleteCommentByID} = require("./controllers/controllers");
+const { getCategories, getEndpoints,getReviews,getReviewById, getReviewCommentsById, postCommentsByReviewId, patchReviewVotes, getUsers, deleteCommentByID} = require("./controllers/controllers");
 
 
 
@@ -7,6 +7,8 @@ const { getCategories, getReviews,getReviewById, getReviewCommentsById, postComm
 const express = require("express");
 const app = express();
 app.use(express.json());
+
+app.get('/api', getEndpoints)
 
 app.get("/api/categories", getCategories);
 

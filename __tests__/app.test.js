@@ -529,3 +529,25 @@ describe('remove comment by id', () => {
     
   });
   
+
+  describe("get API", () => {
+    test("returns the endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.endPoints && typeof body.endPoints === "object").toBe(true);
+            expect(Object.keys(body.endPoints)).toEqual([
+              'GET /api',
+              'GET /api/categories',
+              'GET /api/reviews',
+              'GET /api/reviews/:review_id',
+              'GET /api/reviews/:review_id/comments',
+              'POST /api/reviews/:review_id/comments',
+              'GET /api/users',
+              'DELETE /api/comments/:comment_id'
+            ])
+        });
+    });
+
+  })

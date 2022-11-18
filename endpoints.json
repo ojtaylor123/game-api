@@ -8,7 +8,7 @@
     "exampleResponse": {
       "categories": [
         {
-          "description": "Players attempt to uncover each other's hidden role",
+          "description": "Players attempt to uncover each other’s hidden role",
           "slug": "Social deduction"
         }
       ]
@@ -30,5 +30,80 @@
         }
       ]
     }
+  },
+  "GET /api/reviews/:review_id": {
+    "description": "serves a single review by review_id",
+    "queries": [],
+    "exampleResponse": {
+      "review_id": 1,
+      "title": "Agricola",
+      "category": "euro game",
+      "comment_count": 0,
+      "designer": "Uwe Rosenberg",
+      "owner": "mallionaire",
+      "review_body": "Farmyard fun!",
+      "review_img_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      "created_at": "2021-01-18T10:00:20.514Z",
+      "votes": 1
+    }
+  },
+  "GET /api/reviews/:review_id/comments": {
+    "description": "gets the comments associated with the specified review",
+    "queries": [],
+    "exampleResponse": [
+      {
+        "comment_id": 5,
+        "body": "Now this is a story all about how, board games turned my life upside down",
+        "review_id": 2,
+        "author": "mallionaire",
+        "votes": 13,
+        "created_at": "2021-01-18T10:24:05.410Z"
+      },
+      {
+        "comment_id": 1,
+        "body": "I loved this game too!",
+        "review_id": 2,
+        "author": "bainesface",
+        "votes": 16,
+        "created_at": "2017-11-22T12:43:33.389Z"
+      },
+      {
+        "comment_id": 4,
+        "body": "EPIC board game!",
+        "review_id": 2,
+        "author": "bainesface",
+        "votes": 16,
+        "created_at": "2017-11-22T12:36:03.389Z"
+      }
+    ]
+  },
+  "POST /api/reviews/:review_id/comments": {
+    "description": "adds a new comment for the review associated with the ID",
+    "queries": [],
+    "exampleResponse": {
+        "comment_id": 5,
+        "body": "Now this is a story all about how, board games turned my life upside down",
+        "review_id": 2,
+        "author": "mallionaire",
+        "votes": 13,
+        "created_at": "2021-01-18T10:24:05.410Z"
+      }
+  },
+  "GET /api/users": {
+    "description": "serves all users",
+    "queries": [],
+    "exampleResponse of one user": [
+     
+      {
+        "username": "philippaclaire9",
+        "name": "philippa",
+        "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+      }
+    ]
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a via ID",
+    "queries": [],
+    "exampleResponse": "no response just responds with 204"
   }
 }
