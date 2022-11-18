@@ -1,11 +1,12 @@
 const db = require("../db/connection");
 const format = require("pg-format");
 
-const { checkReviewIdExists, checkUserExists,checkCommentExists } = require("./utils");
+const {
+  checkExists,
+} = require("./utils");
 const reviews = require("../db/data/test-data/reviews");
 const { sort } = require("../db/data/test-data/reviews");
 const { query } = require("../db/connection");
-
 
 exports.fetchCategories = () => {
   return db
@@ -20,8 +21,6 @@ exports.fetchCategories = () => {
 };
 
 exports.fetchReviews = (category, order = "desc", sort_by = "created_at") => {
-  
-
   const orderU = order.toUpperCase();
 
   if (orderU !== "ASC" && orderU !== "DESC") {
@@ -33,21 +32,29 @@ exports.fetchReviews = (category, order = "desc", sort_by = "created_at") => {
   LEFT JOIN comments ON reviews.review_id = comments.review_id
   `;
 
-  const queryParams = []
+  const queryParams = [];
   if (category) {
-    queryParams.push(category)
+    queryParams.push(category);
     queryText += ` WHERE category = $1`;
   }
 
-  const sortCheck = ['owner', 'title', 'review_id', 'category', 'review_img_url', 'created_at', 'votes','comment_count']
-  if(!sortCheck.includes(sort_by)){
-    return Promise.reject({ status: 400, msg: "not a valid sort by" })
-    
+  const sortCheck = [
+    "owner",
+    "title",
+    "review_id",
+    "category",
+    "review_img_url",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+  if (!sortCheck.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "not a valid sort by" });
   }
 
   queryText += ` GROUP BY reviews.review_id ORDER BY reviews.${sort_by} ${orderU};`;
 
-  return db.query(queryText,queryParams).then((result) => {
+  return db.query(queryText, queryParams).then((result) => {
     if (result.rows.length === 0) {
       return Promise.reject({ status: 404, msg: "category not found" });
     }
@@ -93,7 +100,7 @@ exports.fetchReviewCommentsById = (review_id) => {
     });
   }
 
-  return checkReviewIdExists(review_id)
+  return checkExists('reviews','review_id', review_id)
     .then(() => {
       return db.query(
         `SELECT comment_id, votes, created_at, author, body, review_id FROM
@@ -124,7 +131,7 @@ exports.insertCommentsByReviewId = (review_id, commentBody) => {
     });
   }
 
-  return checkReviewIdExists(review_id)
+  return checkExists('reviews','review_id',review_id)
     .then(() => {
       if (!commentBody.username && !commentBody.body) {
         return Promise.reject({
@@ -134,7 +141,7 @@ exports.insertCommentsByReviewId = (review_id, commentBody) => {
       }
     })
     .then(() => {
-      return checkUserExists(commentBody.username);
+      return checkExists('users','username',commentBody.username);
     })
     .then(() => {
       const queryText = `INSERT INTO comments (body, author,review_id) VALUES ('${commentBody.body}', '${commentBody.username}', ${review_id}) RETURNING *; `;
@@ -156,10 +163,7 @@ exports.fetchUsers = () => {
     .then((result) => {
       return result.rows;
     });
-
-}
-
-
+};
 
 exports.updateReviewVotes = (review_id, votes) => {
   if (isNaN(review_id)) {
@@ -197,18 +201,22 @@ exports.updateReviewVotes = (review_id, votes) => {
     });
 };
 
-
 exports.removeCommentByID = (comment_id) => {
-
-  if(isNaN(comment_id)){
-    return Promise.reject({status: 400, msg: 'comment_id must be an integer'})
+  if (isNaN(comment_id)) {
+    return Promise.reject({
+      status: 400,
+      msg: "comment_id must be an integer",
+    });
   }
-  return checkCommentExists(comment_id).then(() => {
 
-    return db.query(`DELETE FROM comments WHERE comment_id = $1`,[comment_id])
-  }).then((comment)=> {
-    return comment.rows[0]
-  })
-
-}
-
+  return db
+    .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *`, [
+      comment_id,
+    ])
+    .then((comment) => {
+      if (comment.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "comment does not exist" });
+      }
+      return comment.rows[0];
+    });
+};
