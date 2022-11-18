@@ -1,5 +1,5 @@
 
-const { getCategories, getReviews,getReviewById, getReviewCommentsById, postCommentsByReviewId, patchReviewVotes, getUsers} = require("./controllers/controllers");
+const { getCategories, getReviews,getReviewById, getReviewCommentsById, postCommentsByReviewId, patchReviewVotes, getUsers, deleteCommentByID} = require("./controllers/controllers");
 
 
 
@@ -22,6 +22,8 @@ app.post("/api/reviews/:review_id/comments", postCommentsByReviewId);
 app.get("/api/users",getUsers)
 
 app.patch("/api/reviews/:review_id",patchReviewVotes)
+
+app.delete("/api/comments/:comment_id", deleteCommentByID)
 
 
 
